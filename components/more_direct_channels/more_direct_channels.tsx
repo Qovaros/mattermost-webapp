@@ -319,6 +319,8 @@ export default class MoreDirectChannels extends React.Component<Props, State> {
             );
         }
 
+        // Now we have last_post_at here so it is only a matter of implementing x time ago thingy
+
         const displayName = displayEntireNameForUser(option);
 
         let modalName: string | React.ReactElement = displayName;
@@ -459,7 +461,18 @@ export default class MoreDirectChannels extends React.Component<Props, State> {
         });
 
         const usersValues = users.map((user) => {
-            return {label: user.username, value: user.id, ...user};
+            let last_post_at = 0;
+            for (const channel of this.props.myDirectChannels) {
+                if (channel.name.indexOf(user.id) >= 0) {
+                    last_post_at = channel.last_post_at;
+                }
+            }
+            return {
+                label: user.username,
+                value: user.id,
+                last_post_at,
+                ...user
+            };
         });
 
         const groupChannels = this.props.groupChannels || [];
@@ -467,7 +480,21 @@ export default class MoreDirectChannels extends React.Component<Props, State> {
             return {label: group.display_name, value: group.id, ...group};
         });
 
-        const options: OptionType[] = [...usersValues, ...groupChannelsValues];
+        const options: OptionType[] = [...usersValues, ...groupChannelsValues].sort((leftElement, rightElement) => {
+            if (leftElement.last_post_at !== rightElement.last_post_at) {
+                if (leftElement.last_post_at > rightElement.last_post_at) {
+                    return -1;
+                }
+                return 1;
+            }
+            if (leftElement.label < rightElement.label) {
+                return -1;
+            }
+            if (leftElement.label > rightElement.label) {
+                return 1;
+            }
+            return 0;
+        });
         const body = (
             <MultiSelect<OptionType>
                 key='moreDirectChannelsList'
