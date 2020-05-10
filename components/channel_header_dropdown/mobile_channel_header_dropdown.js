@@ -68,7 +68,7 @@ export default class MobileChannelHeaderDropdown extends React.PureComponent {
                         {(title) => (
                             <span
                                 className='fa fa-angle-down header-dropdown__icon'
-                                title={title}
+                                ariaLabel={title}
                             />
                         )}
                     </FormattedMessage>

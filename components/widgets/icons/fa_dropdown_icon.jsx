@@ -15,7 +15,7 @@ export default class DropdownIcon extends React.PureComponent {
                 {(title) => (
                     <i
                         className='fa fa-angle-down'
-                        title={title}
+                        ariaLabel={title}
                     />
                 )}
             </FormattedMessage>
